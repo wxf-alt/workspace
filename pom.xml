@@ -13,6 +13,10 @@
         <module>elasticSearch-7.8.0</module>
         <module>elasticSearch-8.1.0</module>
         <module>kafka-3.0.0</module>
+        <module>spark-2.4.0</module>
+        <module>redis-7.0</module>
+        <module>flinkCDC-2.0.0</module>
+        <module>flume-1.7.0</module>
     </modules>
 
 
