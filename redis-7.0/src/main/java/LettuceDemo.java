@@ -1,9 +1,11 @@
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.ScriptOutputType;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 
 import java.time.Duration;
+import java.util.ArrayList;
 
 /**
  * @Auther: wxf
@@ -37,6 +39,9 @@ public class LettuceDemo {
         commands.sadd("set1", "s1", "s2");
         commands.zadd("z1", 10D, "z1");
         commands.hset("h1", "name", "h1");
+
+        String[] arr = {"k1", "k2"};
+        commands.eval("return redis.call('set' KEY[1] ARGV[1], 'set' KEY[2] ARGV[2])", ScriptOutputType.BOOLEAN, arr, "lua1", "lua2");
 
         // 关闭资源
         conn.close();

@@ -17,6 +17,9 @@
         <module>redis-7.0</module>
         <module>flinkCDC-2.0.0</module>
         <module>flume-1.7.0</module>
+        <module>clickhouse</module>
+        <module>doris-2.0.3</module>
+        <module>streampark-2.0.0</module>
     </modules>
 
 

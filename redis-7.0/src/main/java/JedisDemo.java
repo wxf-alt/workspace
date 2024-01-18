@@ -15,6 +15,10 @@ public class JedisDemo {
             // 密码
             jedis.auth("111111");
 
+            // lua 脚本操作
+            jedis.eval("redis.call('set' 'k1', 'v1') return redis.call('get' 'k1')");
+            jedis.eval("return redis.call('set' KEY[1] ARGV[1], 'set' KEY[2] ARGV[2])", 2, "k1", "k2", "lua1", "lua2");
+
             // 操作
             System.out.println(jedis.keys("*"));
 

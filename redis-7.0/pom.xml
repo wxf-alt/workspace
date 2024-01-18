@@ -33,6 +33,20 @@
             <version>2.5.6</version>
         </dependency>
 
+        <!--guava Google 开源的 Guava 中自带的布隆过滤器-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+        </dependency>
+
+        <!--RedisSon 分布式锁-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.13.4</version>
+        </dependency>
+
     </dependencies>
 
 </project>

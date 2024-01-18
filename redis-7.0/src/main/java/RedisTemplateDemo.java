@@ -3,7 +3,10 @@ import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,10 +20,11 @@ public class RedisTemplateDemo {
     public static void main(String[] args) {
 
         RedisTemplate template = new RedisTemplate();
-        RedisStandaloneConfiguration standaloneConfig = new RedisStandaloneConfiguration("nn1.hadoop", 6379);
-        JedisConnectionFactory fac = new JedisConnectionFactory(standaloneConfig);
-        template.setConnectionFactory(fac);
-        template.afterPropertiesSet();
+        // TODO 编译报错
+//        RedisStandaloneConfiguration standaloneConfig = new RedisStandaloneConfiguration("nn1.hadoop", 6379);
+//        JedisConnectionFactory fac = new JedisConnectionFactory(standaloneConfig);
+//        template.setConnectionFactory(fac);
+//        template.afterPropertiesSet();
 
         template.opsForValue().set("hello", "world");
         Object hello = template.opsForValue().get("hello");
@@ -41,8 +45,10 @@ public class RedisTemplateDemo {
         RedisGeoCommands.GeoRadiusCommandArgs arg = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(10);
         GeoResults geoResults = template.opsForGeo().radius("", within, arg);
 
-
         Distance distance = new Distance(6378.137, Metrics.NEUTRAL);
+
+        String luaScript = "redis.call('set' 'k1', 'v1') return redis.call('get' 'k1')";
+        template.execute(new DefaultRedisScript(luaScript, Long.class), Arrays.asList("key"), "value");
 
     }
 }
