@@ -34,7 +34,7 @@ class MyDataSource extends SourceFunction[User] {
   override def run(ctx: SourceFunction.SourceContext[User]): Unit = {
     while (isRunning && index <= 1000001) {
       index += 1
-      val entity: User = new User("a" + System.currentTimeMillis(), random.nextInt(100), random.nextInt(1), "addr" + System.currentTimeMillis())
+      val entity: User = new User("a_" + System.currentTimeMillis(), random.nextInt(100), random.nextInt(1), "addr_" + System.currentTimeMillis())
       ctx.collect(entity)
       Thread.sleep(random.nextInt(1000))
     }
