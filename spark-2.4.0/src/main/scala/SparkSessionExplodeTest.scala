@@ -21,7 +21,14 @@ object SparkSessionExplodeTest {
     val rdd2: RDD[(String, String)] = sparkSession.sparkContext.parallelize(Seq("b" -> "6,7"))
     val rdd3: RDD[(String, String)] = sparkSession.sparkContext.parallelize(Seq("a" -> "8"))
 
-    val df: DataFrame = rdd1.union(rdd2).union(rdd3).toDF("name", "label")
+    val rdd4: RDD[(String, String)] = sparkSession.sparkContext.parallelize(Seq("a" -> "8"))
+
+    rdd1.persist()
+    rdd2.persist()
+    rdd3.persist()
+    rdd4.persist()
+
+    val df: DataFrame = rdd1.union(rdd2).union(rdd3).union(rdd4).toDF("name", "label")
     df.show()
 
     val df1: DataFrame = df.withColumn("label-1", explode(split($"label", ",")))
