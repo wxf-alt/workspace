@@ -20,6 +20,7 @@
         <module>clickhouse</module>
         <module>doris-2.0.3</module>
         <module>streampark-2.0.0</module>
+        <module>iceberg-1.1.0</module>
     </modules>
 
 

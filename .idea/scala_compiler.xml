@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="Maven 1" modules="doris-2.0.3" />
+    <profile name="Maven 1" modules="doris-2.0.3,iceberg-1.1.0,spark-2.4.0" />
   </component>
 </project>
