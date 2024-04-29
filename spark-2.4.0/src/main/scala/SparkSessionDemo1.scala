@@ -23,41 +23,44 @@ object SparkSessionDemo1 {
   def main(args: Array[String]): Unit = {
 
     val meterPowerOffPointDf: DataFrame = getMeterPowerOffPoint(sparkSession)
-    meterPowerOffPointDf.orderBy($"METER_ID").show()
-
-    val df1: DataFrame = sparkSession.sql(
-      "SELECT 8201000092994090 AS METER_ID, 24 AS UA_CNT, 48 AS UB_CNT, 96 AS UC_CNT, 288 AS IA_CNT, 1440 AS IB_CNT, 20 AS UA_THRESHOLD_CNT, 40 AS UB_THRESHOLD_CNT, 90 AS UC_THRESHOLD_CNT, 280 AS IA_THRESHOLD_CNT, 1400 AS IB_THRESHOLD_CNT, 0 AS IC_CNT, 0 AS IC_THRESHOLD_CNT UNION " +
-        "SELECT 8201000092994092 AS METER_ID, 1440 AS UA_CNT, 96 AS UB_CNT, 288 AS UC_CNT, 24 AS IA_CNT, 0 AS IB_CNT, 1400 AS UA_THRESHOLD_CNT, 90 AS UB_THRESHOLD_CNT, 280 AS UC_THRESHOLD_CNT, 20 AS IA_THRESHOLD_CNT, 0 AS IB_THRESHOLD_CNT, 48 AS IC_CNT, 40 AS IC_THRESHOLD_CNT ")
-    df1.show()
-
-    // 停电影响点数 赋值 ->
-    val df2: DataFrame = df1.join(meterPowerOffPointDf, Seq("METER_ID"), "left_outer").persist()
-    df2.show()
-
-    df2
-      .withColumn("POWER_UA_CNT", getPowerPoint($"UA_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
-      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"UA_CNT", $"POWER_UA_CNT", $"UA_THRESHOLD_CNT")
+    meterPowerOffPointDf.orderBy($"METER_ID")
+      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM")
+      .orderBy($"METER_ID", $"POWEROFF_TIME_OLD")
       .show()
 
-    df2
-      .withColumn("POWER_UB_CNT", getPowerPoint($"UB_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
-      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"UB_CNT", $"POWER_UB_CNT", $"UB_THRESHOLD_CNT")
-      .show()
-
-    df2
-      .withColumn("POWER_UC_CNT", getPowerPoint($"UC_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
-      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"UC_CNT", $"POWER_UC_CNT", $"UC_THRESHOLD_CNT")
-      .show()
-
-    df2
-      .withColumn("POWER_IA_CNT", getPowerPoint($"IA_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
-      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"IA_CNT", $"POWER_IA_CNT", $"IA_THRESHOLD_CNT")
-      .show()
-
-    df2
-      .withColumn("POWER_IB_CNT", getPowerPoint($"IB_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
-      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"IB_CNT", $"POWER_IB_CNT", $"IB_THRESHOLD_CNT")
-      .show()
+    //    val df1: DataFrame = sparkSession.sql(
+    //      "SELECT 8201000092994090 AS METER_ID, 24 AS UA_CNT, 48 AS UB_CNT, 96 AS UC_CNT, 288 AS IA_CNT, 1440 AS IB_CNT, 20 AS UA_THRESHOLD_CNT, 40 AS UB_THRESHOLD_CNT, 90 AS UC_THRESHOLD_CNT, 280 AS IA_THRESHOLD_CNT, 1400 AS IB_THRESHOLD_CNT, 0 AS IC_CNT, 0 AS IC_THRESHOLD_CNT UNION " +
+    //        "SELECT 8201000092994092 AS METER_ID, 1440 AS UA_CNT, 96 AS UB_CNT, 288 AS UC_CNT, 24 AS IA_CNT, 0 AS IB_CNT, 1400 AS UA_THRESHOLD_CNT, 90 AS UB_THRESHOLD_CNT, 280 AS UC_THRESHOLD_CNT, 20 AS IA_THRESHOLD_CNT, 0 AS IB_THRESHOLD_CNT, 48 AS IC_CNT, 40 AS IC_THRESHOLD_CNT ")
+    //    df1.show()
+    //
+    //    // 停电影响点数 赋值 ->
+    //    val df2: DataFrame = df1.join(meterPowerOffPointDf, Seq("METER_ID"), "left_outer").persist()
+    //    df2.show()
+    //
+    //    df2
+    //      .withColumn("POWER_UA_CNT", getPowerPoint($"UA_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
+    //      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"UA_CNT", $"POWER_UA_CNT", $"UA_THRESHOLD_CNT")
+    //      .show()
+    //
+    //    df2
+    //      .withColumn("POWER_UB_CNT", getPowerPoint($"UB_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
+    //      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"UB_CNT", $"POWER_UB_CNT", $"UB_THRESHOLD_CNT")
+    //      .show()
+    //
+    //    df2
+    //      .withColumn("POWER_UC_CNT", getPowerPoint($"UC_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
+    //      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"UC_CNT", $"POWER_UC_CNT", $"UC_THRESHOLD_CNT")
+    //      .show()
+    //
+    //    df2
+    //      .withColumn("POWER_IA_CNT", getPowerPoint($"IA_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
+    //      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"IA_CNT", $"POWER_IA_CNT", $"IA_THRESHOLD_CNT")
+    //      .show()
+    //
+    //    df2
+    //      .withColumn("POWER_IB_CNT", getPowerPoint($"IB_CNT", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM"))
+    //      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM", $"IB_CNT", $"POWER_IB_CNT", $"IB_THRESHOLD_CNT")
+    //      .show()
 
   }
 
@@ -139,26 +142,31 @@ object SparkSessionDemo1 {
 
   private def getMeterPowerOffPoint(sparkSession: SparkSession): DataFrame = {
 
-    val df1: DataFrame = sparkSession.sql(
+    val df: DataFrame = sparkSession.sql(
       "SELECT 8201000092994090 AS METER_ID, '2024-04-07 10:45:24' AS POWEROFF_TIME, '' AS POWERON_TIME UNION " +
-        "SELECT 8201000092994090 AS METER_ID, '2024-04-07 14:28:24' AS POWEROFF_TIME, '2024-04-08 09:57:24' AS POWERON_TIME UNION " +
+        "SELECT 8201000092994090 AS METER_ID, '2024-04-07 14:28:24' AS POWEROFF_TIME, '2024-04-07 15:00:00' AS POWERON_TIME UNION " +
         "SELECT 8201000092994092 AS METER_ID, '2024-04-07 10:57:24' AS POWEROFF_TIME, '2024-04-07 17:58:52' AS POWERON_TIME UNION " +
         "SELECT 8201000092994092 AS METER_ID, '2024-04-07 18:00:00' AS POWEROFF_TIME, '2024-04-07 18:04:52' AS POWERON_TIME UNION " +
         "SELECT 8201000092994092 AS METER_ID, '2024-04-07 10:50:00' AS POWEROFF_TIME, '2024-04-07 11:15:52' AS POWERON_TIME UNION " +
-        "SELECT 8201000092994092 AS METER_ID, '2024-04-07 18:05:20' AS POWEROFF_TIME, '' AS POWERON_TIME")
+        "SELECT 8201000092994092 AS METER_ID, '2024-04-07 18:05:20' AS POWEROFF_TIME, '2024-04-07 23:59:00' AS POWERON_TIME")
       .withColumn("POWEROFF_TIME", $"POWEROFF_TIME".cast(TimestampType))
       .withColumn("POWERON_TIME", $"POWERON_TIME".cast(TimestampType))
-      // 复电时间为空 置为 下一条的 停电时间
-      .withColumn("POWERON_TIME", when($"POWERON_TIME".isNotNull, $"POWERON_TIME").otherwise(lead($"POWEROFF_TIME", 1) over Window.partitionBy($"METER_ID").orderBy($"POWEROFF_TIME")))
-      // 重新赋值 复电时间
-      .withColumn("POWERON_TIME",
+      .persist()
+    df.orderBy($"METER_ID", $"POWEROFF_TIME").show()
+
+    val df1: DataFrame = df
+      // 重新赋值 复电时间 1.查看停复电是否在同一天,如果不在将复电时间赋值第二天零时 2.复电时间为空 置为下一条的停电时间-1
+      //      .withColumn("POWERON_TIME", when($"POWERON_TIME".isNotNull, $"POWERON_TIME").otherwise(lead($"POWEROFF_TIME", 1) over Window.partitionBy($"METER_ID").orderBy($"POWEROFF_TIME")))
+      .withColumn("POWERON_TIME", when($"POWERON_TIME".isNotNull,
         when(to_date($"POWERON_TIME", "yyyy-MM-dd") === to_date($"POWEROFF_TIME", "yyyy-MM-dd"), $"POWERON_TIME")
-          .otherwise(concat(to_date($"POWEROFF_TIME", "yyyy-MM-dd"), lit(" 23:59:59")).cast(TimestampType))) // 停电超一天 将复电时间修改成当天 23:58:59
+          .otherwise(concat(to_date(from_unixtime(unix_timestamp($"POWEROFF_TIME") + (60 * 60 * 24), "yyyy-MM-dd HH:mm:ss"), "yyyy-MM-dd"), lit(" 00:00:00")).cast(TimestampType))
+      ).otherwise(lead(from_unixtime(unix_timestamp($"POWEROFF_TIME") - 1, "yyyy-MM-dd HH:mm:ss"), 1) over Window.partitionBy($"METER_ID").orderBy($"POWEROFF_TIME")))
       .withColumn("POWEROFF_TIME1", date_format($"POWEROFF_TIME", "yyyy-MM-dd HH:mm").cast(TimestampType))
       .withColumn("POWERON_TIME1", date_format($"POWERON_TIME", "yyyy-MM-dd HH:mm").cast(TimestampType))
       .withColumn("POWEROFF_TIME2", when($"POWEROFF_TIME" > $"POWEROFF_TIME1", from_unixtime(unix_timestamp($"POWEROFF_TIME1") + 60, "yyyy-MM-dd HH:mm:ss")).otherwise($"POWEROFF_TIME1"))
-      .withColumn("POWERON_TIME2", when($"POWERON_TIME" < $"POWERON_TIME1", from_unixtime(unix_timestamp($"POWERON_TIME1") + 60, "yyyy-MM-dd HH:mm:ss")).otherwise($"POWERON_TIME1"))
-    //    df1.orderBy($"METER_ID", $"POWEROFF_TIME").show()
+      .withColumn("POWERON_TIME2", when($"POWERON_TIME" <= $"POWERON_TIME1", from_unixtime(unix_timestamp($"POWERON_TIME1") - 60, "yyyy-MM-dd HH:mm:ss")).otherwise($"POWERON_TIME1"))
+
+    df1.orderBy($"METER_ID", $"POWEROFF_TIME").show()
 
     val df2: DataFrame = df1
       .select($"METER_ID", $"POWEROFF_TIME" as "POWEROFF_TIME_OLD", $"POWERON_TIME" as "POWERON_TIME_OLD", $"POWEROFF_TIME2" as "POWEROFF_TIME", $"POWERON_TIME2" as "POWERON_TIME")
