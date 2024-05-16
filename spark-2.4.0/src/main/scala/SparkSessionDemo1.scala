@@ -22,22 +22,10 @@ object SparkSessionDemo1 {
 
   def main(args: Array[String]): Unit = {
 
-    //    val meterPowerOffPointDf: DataFrame = getMeterPowerOffPoint(sparkSession)
-    //    meterPowerOffPointDf.orderBy($"METER_ID")
-    //      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM")
-    //      .orderBy($"METER_ID", $"POWEROFF_TIME_OLD")
-    //      .show()
-
-    sparkSession.sparkContext.setLogLevel("ERROR")
-
-    val df: DataFrame = sparkSession.sql("SELECT '01' AS GS_CUST_TYPE union SELECT '05' AS GS_CUST_TYPE union SELECT '06' AS GS_CUST_TYPE").persist()
-    df.show()
-
-    df.withColumn("SPECIAL_CUST_TYPE", when($"GS_CUST_TYPE" === "05", "01").when($"GS_CUST_TYPE" === "06", "02"))
-      .withColumn("GS_CUST_TYPE1", when($"SPECIAL_CUST_TYPE".isin("01", "02"), "").otherwise($"GS_CUST_TYPE"))
-      //      .withColumn("GS_CUST_TYPE1", when((!$"SPECIAL_CUST_TYPE".isin("01", "02")) || $"SPECIAL_CUST_TYPE".isNull, $"GS_CUST_TYPE").otherwise(null))
-      .withColumn("GS_CUST_TYPE2", when($"GS_CUST_TYPE1".isNull, "00001").otherwise($"GS_CUST_TYPE1"))
-      //      .withColumn("GS_CUST_TYPE3", when($"GS_CUST_TYPE1".isNull || $"GS_CUST_TYPE1" === "", "00001").otherwise($"GS_CUST_TYPE1"))
+    val meterPowerOffPointDf: DataFrame = getMeterPowerOffPoint(sparkSession)
+    meterPowerOffPointDf.orderBy($"METER_ID")
+      .select($"METER_ID", $"POWEROFF_TIME_OLD", $"POWERON_TIME_OLD", $"POWEROFF_TIME_NUM", $"POWERON_TIME_NUM")
+      .orderBy($"METER_ID", $"POWEROFF_TIME_OLD")
       .show()
 
     //    val df1: DataFrame = sparkSession.sql(
