@@ -1,7 +1,6 @@
 package structured
 
 import java.sql.{Connection, DriverManager}
-
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.streaming.Trigger
 import org.apache.spark.sql.{DataFrame, Dataset, ForeachWriter, Row, SparkSession}
