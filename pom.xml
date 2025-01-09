@@ -21,6 +21,8 @@
         <module>doris-2.0.3</module>
         <module>streampark-2.0.0</module>
         <module>iceberg-1.1.0</module>
+        <module>java-flink-1.15.4</module>
+        <module>newFlinkApi</module>
     </modules>
 
 

@@ -12,9 +12,11 @@
         <module name="clickhouse" />
         <module name="streampark-2.0.0" />
         <module name="spark-2.4.0" />
+        <module name="java-flink-1.15.4" />
         <module name="flinkCDC-2.0.0" />
         <module name="iceberg-1.1.0" />
         <module name="doris-2.0.3" />
+        <module name="newFlinkApi" />
         <module name="flume-1.7.0" />
         <module name="redis-7.0" />
       </profile>

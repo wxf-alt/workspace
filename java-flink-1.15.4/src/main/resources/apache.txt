@@ -1,0 +1,14 @@
+/presentations/logstash-monitorama-2013/images/kibana-search.png 83
+/presentations/logstash-monitorama-2013/images/kibana-dashboard3.png 83
+/presentations/logstash-monitorama-2013/plugin/highlight/highlight.js 83
+/presentations/logstash-monitorama-2013/plugin/zoom-js/zoom.js 83
+/presentations/logstash-monitorama-2013/plugin/notes/notes.js 83
+/presentations/logstash-monitorama-2013/images/sad-medic.png 83
+/presentations/logstash-monitorama-2013/css/fonts/Roboto-Bold.ttf 83
+/presentations/logstash-monitorama-2013/css/fonts/Roboto-Regular.ttf 83
+/presentations/logstash-monitorama-2013/images/frontend-response-codes.png 83
+/presentations/logstash-monitorama-2013/images/kibana-dashboard.png 83
+/presentations/logstash-monitorama-2013/images/Dreamhost_logo.svg 83
+/presentations/logstash-monitorama-2013/images/kibana-dashboard2.png 83
+/presentations/logstash-monitorama-2013/images/apache-icon.gif 83
+/presentations/logstash-monitorama-2013/images/nagios-sms5.png 83
