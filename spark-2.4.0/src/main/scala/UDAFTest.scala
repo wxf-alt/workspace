@@ -1,7 +1,8 @@
 import org.apache.spark.sql.{DataFrame, Row}
-import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction}
-import org.apache.spark.sql.types.{DataType, StringType, StructField, StructType}
+import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAggregateFunction, UserDefinedFunction}
+import org.apache.spark.sql.types.{DataType, IntegerType, StringType, StructField, StructType}
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions._
 
 /**
  * @Auther: wxf
@@ -35,14 +36,24 @@ object UDAFTest {
     frame.show()
 
     val concatenateUDAF: ConcatenateUDAF = new ConcatenateUDAF
+    val sumUDAF: SumUDAF = new SumUDAF
 
     val result: DataFrame = frame
       .groupBy($"id")
-      .agg(concatenateUDAF($"name").as("concat_name"))
+      .agg(
+        concatenateUDAF($"name").as("concat_name"),
+        concatenateUDAF($"age").as("concat_age"),
+        sumUDAF($"age").as("sum_age")
+      )
+      .withColumn("age_sum", ageSumFunction($"concat_age"))
 
     result.show()
 
   }
+
+  val ageSumFunction: UserDefinedFunction = udf((concat_age: String) => {
+    concat_age.split("_").map(_.toInt).sum
+  })
 
   // 创建UDAF函数，传入一个字段，将多行的字段值使用‘_’连接
   class ConcatenateUDAF extends UserDefinedAggregateFunction {
@@ -82,6 +93,41 @@ object UDAFTest {
     }
 
     override def evaluate(buffer: Row): String = buffer.getString(0) // .stripSuffix("_").stripPrefix("_")
+  }
+
+  class SumUDAF extends UserDefinedAggregateFunction {
+
+    override def inputSchema: StructType = StructType(Array(StructField("value", IntegerType)))
+
+    override def bufferSchema: StructType = StructType(Array(StructField("buffer", IntegerType)))
+
+    override def dataType: DataType = IntegerType
+
+    override def deterministic: Boolean = true
+
+    override def initialize(buffer: MutableAggregationBuffer): Unit = buffer(0) = 0
+
+    override def update(buffer: MutableAggregationBuffer, input: Row): Unit = {
+      if (!input.isNullAt(0)) {
+        if (0 == buffer.getInt(0)) {
+          buffer(0) = input.getInt(0)
+        } else {
+          buffer(0) = buffer.getInt(0) + input.getInt(0)
+        }
+      }
+    }
+
+    override def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit = {
+      if (!buffer2.isNullAt(0)) {
+        if (0 == buffer1.getInt(0)) {
+          buffer1(0) = buffer2.getInt(0)
+        } else {
+          buffer1(0) = buffer1.getInt(0) + buffer2.getInt(0)
+        }
+      }
+    }
+
+    override def evaluate(buffer: Row): Int = buffer.getInt(0)
   }
 
 
